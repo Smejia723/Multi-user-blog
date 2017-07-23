@@ -23,7 +23,7 @@ def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
-# Make a secured hashed val
+# Make a secured hashed value
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
@@ -137,7 +137,7 @@ class User(db.Model):
 #####work on post handles here!!!!!
 # Blog stuff
 def blog_key(name='default'):
-    return db.Key.from_path('blogs', name)
+    return db.Key.from_path('asciichans', name)
 
 # Create our post entity
 class Post(db.Model):
@@ -219,7 +219,7 @@ class EditPost(BlogHandler):
                     var.subject = subject
                     var.content = content
                     var.put()
-                    return self.redirect('/blog/%s' % str(var.key().id()))
+                    return self.redirect('/asciichan/%s' % str(var.key().id()))
                 else:
                     error = "Both subject and content are required fields"
                     self.render(
@@ -230,17 +230,17 @@ class EditPost(BlogHandler):
 
             if "delete" in self.request.POST:
                 if not self.user:
-                    return self.redirect('/blog')
+                    return self.redirect('/asciichan')
 
                 postid = Post.get_by_id(int(post_id), parent=blog_key())
-                return self.redirect('/blog/delete-confirmation/%s' %
+                return self.redirect('/asciichan/delete-confirmation/%s' %
                                      str(postid.key().id()))
 
             if "cancel" in self.request.POST:
                 if not self.user:
-                    return self.redirect('/blog')
+                    return self.redirect('/asciichan')
 
-                return self.redirect('/blog/postandcomments/%s' % str(post_id))
+                return self.redirect('/asciichan/postandcomments/%s' % str(post_id))
         else:
             self.render("error.html")
 
@@ -272,11 +272,11 @@ class DelConfirmation(BlogHandler):
                 if "delete-post" in self.request.POST:
                     delVal = Post.get_by_id(int(post_id), parent=blog_key())
                     delVal.delete()
-                    return self.redirect("/blog")
+                    return self.redirect("/asciichan")
                 if "cancel-delete" in self.request.POST:
-                    return self.redirect("/blog")
+                    return self.redirect("/asciichan")
             else:
-                return self.redirect('/blog')
+                return self.redirect('/asciichan')
         else:
             return self.redirect('/login')
 
@@ -306,7 +306,7 @@ class NewPost(BlogHandler):
                 author=author,
                 postid=postid)
             p.put()
-            return self.redirect('/blog/%s' % str(p.key().id()))
+            return self.redirect('/asciichan/%s' % str(p.key().id()))
         else:
             error = "subject and content, please!"
             self.render(
@@ -440,7 +440,7 @@ class EditComment(BlogHandler):
                 if content:
                     comment.content = content
                     comment.put()
-                    return self.redirect('/blog/')
+                    return self.redirect('/asciichan/')
                 else:
                     error = True
                     self.render(
@@ -454,22 +454,22 @@ class EditComment(BlogHandler):
         # trigger delete comment if it is our user
         if "delete" in self.request.POST:
             if not self.user:
-                return self.redirect('/blog')
+                return self.redirect('/asciichan')
 
             key = db.Key.from_path('Comment', int(comment_id))
             comment = db.get(key)
-            return self.redirect("/blog/"
+            return self.redirect("/asciichan/"
                                  "deletecomment/%s" % str(comment.key().id()))
 
         # trigger cancel changes if it is our user
         if "cancel" in self.request.POST:
             if not self.user:
-                return self.redirect('/blog')
+                return self.redirect('/asciichan')
 
             key = db.Key.from_path('Comment', int(comment_id))
             comment = db.get(key)
             postid = comment.postid
-            return self.redirect('/blog/postandcomments/%s' % str(postid))
+            return self.redirect('/asciichan/postandcomments/%s' % str(postid))
 
 
 # actually delete the comment
@@ -499,11 +499,11 @@ class DeleteComment(BlogHandler):
                 key = db.Key.from_path('Comment', int(comment_id))
                 comment = db.get(key)
                 comment.delete()
-                return self.redirect("/blog")
+                return self.redirect("/asciichan")
             if "cancel-delete" in self.request.POST:
-                return self.redirect("/blog")
+                return self.redirect("/asciichan")
         else:
-            return self.redirect('/blog')
+            return self.redirect('/asciichan')
 
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -588,7 +588,7 @@ class Register(Signup):
             u = User.register(self.username, self.password, self.email)
             u.put()
             self.login(u)
-            return self.redirect('/blog')
+            return self.redirect('/asciichan')
 
 # Setting up login, conformation, and error.
 class Login(BlogHandler):
@@ -602,7 +602,7 @@ class Login(BlogHandler):
         u = User.login(username, password)
         if u:
             self.login(u)
-            return self.redirect('/blog')
+            return self.redirect('/asciichan')
         else:
             msg = 'Invalid login'
             self.render('login-form.html', error=msg)
@@ -637,15 +637,15 @@ class Welcome(BlogHandler):
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/unit2/signup', Unit2Signup),
                                ('/unit2/welcome', Welcome),
-                               ('/blog/?', BlogFront),
-                               ('/blog/([0-9]+)', PostPage),
-                               ('/blog/newpost', NewPost),
-                               ('/blog/postandcomments/([0-9]+)', Comments),
-                               ('/blog/editpost/([0-9]+)', EditPost),
-                               ("/blog/delete-confirmation"
+                               ('/asciichan/?', BlogFront),
+                               ('/asciichan/([0-9]+)', PostPage),
+                               ('/asciichan/newpost', NewPost),
+                               ('/asciichan/postandcomments/([0-9]+)', Comments),
+                               ('/asciichan/editpost/([0-9]+)', EditPost),
+                               ("/asciichan/delete-confirmation"
                                "/([0-9]+)", DelConfirmation),
-                               ('/blog/editcomment/([0-9]+)', EditComment),
-                               ('/blog/deletecomment/([0-9]+)', DeleteComment),
+                               ('/asciichan/editcomment/([0-9]+)', EditComment),
+                               ('/asciichan/deletecomment/([0-9]+)', DeleteComment),
                                ('/signup', Register),
                                ('/login', Login),
                                ('/error', Error),
