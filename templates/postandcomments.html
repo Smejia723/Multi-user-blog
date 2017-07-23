@@ -6,7 +6,7 @@
       <div class="col-md-4"><h4 class="pull-right">Likes <span class="label label-default">{{post.likes}}</span></h4></div>
     </div>
       Written {{post.last_modified.strftime("%b %d, %Y %H:%M %p")}} | <a href="/blog/editpost/{{post.key().id()}}">Edit</a>
-      <hr style="width: 100%; color: black; height: 1px; background-color:black;" />
+      <hr/>
     <div class="row">
       <div class="col-md-12 post-content">{{post.content}}</div>
     </div>
