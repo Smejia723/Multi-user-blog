@@ -206,8 +206,7 @@ class EditPost(BlogHandler):
 
         if query is None:
             self.error(404)
-            return self.render("error.html")
-
+            
         subject = self.request.get('subject')
         content = self.request.get('content')
         username = self.user.name
