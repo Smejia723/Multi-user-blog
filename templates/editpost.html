@@ -4,7 +4,7 @@
 {% if flag %}
 <h2 class="post-title">Edit Post</h2>
 Last modified {{query.last_modified.strftime("%b %d, %Y %H:%M %p")}}
-<hr style="width: 100%; color: black; height: 1px; background-color:black;" />
+<hr/>
 <form method="post">
   <div class="row">
     <div class="col-md-12">
@@ -50,7 +50,8 @@ Last modified {{query.last_modified.strftime("%b %d, %Y %H:%M %p")}}
 {% endif %}
 
 {% if not flag %}
-<div class="alert alert-danger" role="alert">You cannot modify this post, <a href="/blog/postandcomments/{{query.key().id()}}">click here to return</a></div>
+<div class="alert alert-danger" role="alert">You cannot modify this post, <a href="
+/asciichan2/postandcomments/{{query.key().id()}}">click here to return</a></div>
 {% endif %}
 
 {% endblock %}

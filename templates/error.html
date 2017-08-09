@@ -3,7 +3,7 @@
 <header>
   <meta charset="utf-8">
   <meta name="portfolio" content="width=device-width, initial-scale=1.0">
-  <title>portfolio website</title>
+  <title>Multi-user blog</title>
   <link rel="stylesheet" href="css/bootstrap.css">
   <link href="https://fonts.googleapis.com/css?family=Josefin+Sans"
   rel="stylesheet" type="text/css">
@@ -15,11 +15,11 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6">
-        <a class="main-title" href="/blog">Multi-user Blog</a>
+        <a class="main-title" href="/asciichan2">Multi-user Blog</a>
       </div>
       <div class="col-md-6 vertical-center">
         <div class="login-area pull-right vertical-center">
-          {% if user %} <a class="login-link" href="/blog/newpost">New post</a> | {{user.name}} (<a class="login-link" href="/logout">Logout</a>) {% else %} <a class="login-link" href="/login">Login</a> | <a class="login-link" href="/signup">Register</a> {% endif %}
+          {% if user %} <a class="login-form" href="/asciichan2/newpost">New post</a> | {{user.name}} (<a class="login-form" href="/logout">Logout</a>) {% else %} <a class="login-form" href="/login">Login</a> | <a class="login-form" href="/signup">Register</a> {% endif %}
         </div>
       </div>
     </div>

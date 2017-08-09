@@ -3,9 +3,7 @@
 {% block content %}
     <div class="row">
       <div class="col-md-8"><div class="post-title">{{post.subject}}</div></div>
-      <div class="col-md-4"><h4 class="pull-right">Likes <span class="label label-default">{{post.likes}}</span></h4></div>
-    </div>
-      Written {{post.last_modified.strftime("%b %d, %Y %H:%M %p")}} | <a href="/blog/editpost/{{post.key().id()}}">Edit</a>
+      Written {{post.last_modified.strftime("%b %d, %Y %H:%M %p")}} | <a href="/asciichan2/editpost/{{post.key().id()}}">Edit</a>
       <hr/>
     <div class="row">
       <div class="col-md-12 post-content">{{post.content}}</div>
@@ -65,7 +63,7 @@
       <div class="boxed">
         {{ c.content }}
       </div>
-      {{ c.author }} commented on {{ c.created.strftime("%b %d %Y %H:%M %p") }} | <a href="/blog/editcomment/{{c.key().id()}}">Modify</a>
+      {{ c.author }} commented on {{ c.created.strftime("%b %d %Y %H:%M %p") }} | <a href="/asciichan2/editcomment/{{c.key().id()}}">Modify</a>
       <br><br>
     {% endfor %}
 {% endblock %}

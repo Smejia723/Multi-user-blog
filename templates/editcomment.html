@@ -36,12 +36,14 @@ Last modified {{comment.last_modified.strftime("%b %d, %Y %H:%M %p")}}
 {% endif %}
 {% if not flag %}
 <br>
-<div class="alert alert-danger" role="alert">You are not allowed to modify this comment, <a href="/blog/postandcomments/{{comment.postid}}">click here to return to the post</a></div>
+<div class="alert alert-danger" role="alert">You are not allowed to modify this comment, <a href="
+/asciichan2/postandcomments/{{comment.postid}}">click here to return to the post</a></div>
 {% endif %}
 
 {% if error %}
 <br>
-<div class="alert alert-danger" role="alert">Comment must contain text, <a href="/blog/postandcomments/{{comment.postid}}">click here to return to the post</a></div>
+<div class="alert alert-danger" role="alert">Comment must contain text, <a href="
+/asciichan2/postandcomments/{{comment.postid}}">click here to return to the post</a></div>
 {% endif %}
 
 {% endblock %}
