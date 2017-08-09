@@ -328,7 +328,7 @@ class DelConfirmation(BlogHandler):
             else:
                 return self.redirect('/asciichan2/')
         else:
-            return self.redirect('login')
+            return self.redirect('/login')
 
 
 # Creates new post
@@ -617,7 +617,8 @@ class Signup(BlogHandler):
 # Inherits from signup and overwrites done
 class Unit2Signup(Signup):
     def done(self):
-        return self.redirect('/unit2/welcome?username=' + self.username)
+        return self.redirect('/unit2/welcome?username=' + 
+            self.username)
 
 # Register class inherits from signup
 class Register(Signup):
@@ -626,9 +627,12 @@ class Register(Signup):
         u = User.by_name(self.username)
         if u:
             msg = 'That user already exists.'
-            self.render('signup-form.html', error_username=msg)
+            self.render('signup-form.html', 
+                error_username=msg)
         else:
-            u = User.register(self.username, self.password, self.email)
+            u = User.register(self.username, 
+                self.password, 
+                self.email)
             u.put()
             self.login(u)
             return self.redirect('/asciichan2/')
@@ -636,7 +640,8 @@ class Register(Signup):
 # Setting up login, conformation, and error.
 class Login(BlogHandler):
     def get(self):
-        self.render('login-form.html', error=self.request.get('error'))
+        self.render('login-form.html',
+        error=self.request.get('error'))
 
     def post(self):
         username = self.request.get('username')
