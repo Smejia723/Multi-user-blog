@@ -514,7 +514,8 @@ class EditComment(BlogHandler):
         if "delete" in self.request.POST:
             key = db.Key.from_path('Comment', int(comment_id))
             comment = db.get(key)
-            return self.redirect("/deletecomment/%s" % str(comment.key().id()))
+            return self.redirect(
+            '/asciichan2/deletecomment/%s' % str(comment.key().id()))
 
         # Trigger cancel changes if it is our user
         if "cancel" in self.request.POST:
@@ -524,7 +525,8 @@ class EditComment(BlogHandler):
             key = db.Key.from_path('Comment', int(comment_id))
             comment = db.get(key)
             postid = comment.postid
-            return self.redirect('/postandcomments/%s' % str(postid))
+            return self.redirect(
+            '/asciichan2/postandcomments/%s' % str(postid))
 
 
 # Actually delete the comment
