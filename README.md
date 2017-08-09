@@ -5,6 +5,8 @@ Udacity project a simple Multi-user-blog bult in python
 Clone this repo to your desktop, go to its root directory and run:
 
 dev_appserver.py .
+or go here to the live version
+https://hello-udacity-169422.appspot.com/
 
 # License
 The MIT License
