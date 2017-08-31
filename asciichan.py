@@ -178,22 +178,23 @@ class BlogFront(BlogHandler):
 # Events after you create a post
 class PostPage(BlogHandler):
     def get(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        key = db.Key.from_path('Post',
+        int(post_id),
+        parent = blog_key())
         post = db.get(key)
+        if post:
+            comments = Comment.all().filter(
+                'post_id =', int(post_id)).order('created')
 
-        if not post:
+            error = "Both title and comment are required fields"
+
+            return self.render('permalink.html',
+                post=post,
+                comments=comments,
+                error=error)
+        else:
             self.error(404)
-            return
-
-        comments = Comment.all().filter(
-            'post_id =', int(post_id)).order('created')
-
-        error = "Both title and comment are required fields"
-
-        self.render('permalink.html',
-            post=post,
-            comments=comments,
-            error=error)
+            return self.redirect('/login')
 
 # Edits posts
 class EditPost(BlogHandler):
@@ -201,68 +202,47 @@ class EditPost(BlogHandler):
 
         key = db.Key.from_path('Post',
         int(post_id),
-        parent=blog_key())
-        query = db.get(key)
-
-        if not query:
-            self.error(404)
-            return self.render('error.html')
-
+        parent = blog_key())
+        post = db.get(key)
         # If user is logged in, proceed
         if self.user:
             username = self.user.name
-            author = query.author
+            author = post.author
             if author == username:
                 flag = True
                 self.render('editpost.html',
-                query=query, flag=flag)
+                post=post, flag=flag)
             else:
                 flag = False
                 self.render('editpost.html',
-                query=query, flag=flag)
+                post=post, flag=flag)
         # Redirect to login
         else:
+            self.error(404)
             return self.redirect('/login')
 
     # waits for the right event triggers
     def post(self, post_id):
+        if not self.user:
+            error = "please return to login"
+            return self.redirect('/login')
+
         key = db.Key.from_path('Post',
         int(post_id),
         parent=blog_key())
-        query = db.get(key)
-
-        if self.user:
-            username = self.user.name
-            author = query.author
-            if author == username:
-                flag = True
-                self.render("editpost.html",
-                query=query,
-                flag=flag)
-            else:
-                flag = False
-                self.render("editpost.html",
-                query=query,
-                flag=flag)
-        # Redirect to login
-        else:
-            return self.redirect('/login')
-
-        if query is None:
-            self.error(404)
-            return self.render('error.html')
-
+        post = db.get(key)
         subject = self.request.get('subject')
         content = self.request.get('content')
+
         username = self.user.name
-        author = query.author
+        author = post.author
         if author == username:
             if "update" in self.request.POST:
                 if subject and content:
-                    subject = query.subject
-                    content = query.content
-                    query.put()
-                    return self.redirect('/%s' % str(var.key().id()))
+                    subject = post.subject
+                    content = post.content
+                    post.put()
+                    return self.redirect('/asciichan2/%s' % str(post.key().id()))
                 else:
                     error = "Both subject and content are required fields"
                     self.render(
@@ -270,66 +250,33 @@ class EditPost(BlogHandler):
                         subject=subject,
                         content=content,
                         error=error)
-
-            if "delete" in self.request.POST:
-                if not self.user:
-                    return self.redirect('/asciichan2/')
-
-                post_id = Post.get_by_id(int(post_id),
-                parent=blog_key())
-                return self.redirect('/delete-confirmation/%s' %
-                                     str(post_id.key().id()))
-
             if "cancel" in self.request.POST:
-                if not self.user:
                     return self.redirect('/asciichan2/')
-
-                return self.redirect(
-                    '/postandcomments/%s' % str(post_id))
         else:
             self.render('error.html')
 
 # Deletes post
 class DelConfirmation(BlogHandler):
     def get(self, post_id):
-        if post_id:
+        key = db.Key.from_path('Post',
+        int(post_id),
+        parent = blog_key())
+        post = db.get(key)
+        if post:
             if self.user:
-                key = db.Key.from_path('Post', int(post_id),
+                key = db.Key.from_path('Post',
+                int(post_id),
                 parent=blog_key())
-                query = db.get(key)
-                if query:
+                post = db.get(key)
+                username = self.user.name
+                author = post.author
+                if post:
                     self.render('delete-confirmation.html',
-                    query=query)
+                    post=post)
                 else:
                     self.error(404)
                     return self.render('error.html')
-            else:
-                return self.redirect('/login')
-
-    def post(self, post_id):
-
-        if post is not None:
-            key = db.Key.from_path('Post',
-            int(post_id),
-            parent=blog_key())
-            query = db.get(key)
-
-            username = self.user.name
-            author = query.author
-
-            if username == author:
-                if "delete-post" in self.request.POST:
-                    delVal = Post.get_by_id(int(post_id),
-                    parent=blog_key())
-                    delVal.delete()
-                    return self.redirect('/')
-                if "cancel-delete" in self.request.POST:
-                    return self.redirect('/')
-            else:
-                return self.redirect('/asciichan2/')
-        else:
-            return self.redirect('/login')
-
+            return self.redirect('/asciichan2/')
 
 # Creates new post
 class NewPost(BlogHandler):
@@ -367,6 +314,8 @@ class NewPost(BlogHandler):
                 author=author,
                 postid=postid)
 
+
+
 # Comment section and the database table
 class Comment(db.Model):
     author = db.StringProperty(required=True)
@@ -384,10 +333,12 @@ class Comment(db.Model):
 # Key class to render our blog posts
 class Comments(BlogHandler):
     def get(self, post_id):
-        if self.user:
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-            post = db.get(key)
-
+        key = db.Key.from_path('Post',
+        int(post_id),
+        parent = blog_key())
+        post = db.get(key)
+        if post:
+            return
             allcomments = db.GqlQuery("""select * from Comment where
                                       postid = :post_id
                                       order by created asc""",
@@ -408,10 +359,13 @@ class Comments(BlogHandler):
                     post=post,
                     allcomments=allcomments)
         else:
+            self.error(404)
             return self.redirect('/login')
 
     # Insert into the comments table
     def post(self, post_id):
+        if not self.user:
+            return self.redirect('/login')
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
 
@@ -421,8 +375,7 @@ class Comments(BlogHandler):
                                   post_id=post_id)
         author = self.user.name
         content = self.request.get('content')
-        if not self.user:
-            return self.redirect('/login')
+
 
         # Check for the right event
         if "insert" in self.request.POST:
@@ -431,7 +384,7 @@ class Comments(BlogHandler):
                     post=post.key,
                     content=content,
                     author=author,
-                    postid=post_id)
+                    postid=postid)
                 c.put()
                 self.render(
                     "/postandcomments.html",
@@ -441,31 +394,19 @@ class Comments(BlogHandler):
                     allcomments=allcomments)
             else:
                 comment_error = True
-                self.render(
-                    "/postandcomments.html",
-                    post=post,
-                    content=content,
-                    author=author,
-                    allcomments=allcomments,
-                    comment_error=comment_error)
+                self.error(404)
+                return self.render('error.html')
 
 # Edit comments
 class EditComment(BlogHandler):
     def get(self, comment_id):
         # Attempt to get the comment  id
-        key = db.Key.from_path('Comment', int(comment_id))
-        comment = db.get(key)
-
-        if not comment:
-            self.error(404)
-            return self.render('error.html')
-
         if self.user:
             username = self.user.name
             author = comment.author
-        else:
-            return self.redirect('/login')
-
+            key = db.Key.from_path('Comment',
+            int(comment_id))
+            comment = db.get(key)
         # If logged in user name matches the author name
         if author == username:
             # Pass in flag into template
@@ -473,11 +414,17 @@ class EditComment(BlogHandler):
             self.render('editcomment.html',
                 comment=comment,
                 flag=flag)
-        else:
-            flag = False
-            self.render('editcomment.html',
+            return self.redirect('/asciichan2/%s' % str(comment.key().id())
                 comment=comment,
                 flag=flag)
+
+        if not comment:
+            self.error(404)
+            return self.render('error.html')
+        else:
+            return self.redirect('/login')
+
+
 
     # Use the post method to update
     def post(self, comment_id):
@@ -528,45 +475,21 @@ class EditComment(BlogHandler):
             return self.redirect(
             '/asciichan2/postandcomments/%s' % str(postid))
 
-
 # Actually delete the comment
 class DeleteComment(BlogHandler):
-    def get(self, comment_id):
+    def get(self, post_id, comment_id):
         if self.user:
+            key = db.Key.from_path('Comment',
+            int(comment_id), parent=blog_key())
             username = self.user.name
             author = comment.author
-            key = db.Key.from_path('Comment', int(comment_id))
             comment = db.get(key)
+            if comment:
+                self.render('deletecomment.html',
+                comment=comment)
             if not comment:
                 self.error(404)
                 return self.render('error.html')
-
-            self.render('deletecomment.html', comment=comment)
-        else:
-            return self.redirect('/login')
-
-    def post(self, comment_id):
-        # First get the post_id using the comment_id
-        key = db.Key.from_path('Comment', int(comment_id))
-        comment = db.get(key)
-        if not self.user:
-            return self.redirect('/login')
-
-        if not comment:
-            self.error(404)
-            return self.render('error.html')
-        comment_author = comment.author
-
-        username = self.user.name
-
-        if username == comment_author:
-            if "delete-comment" in self.request.POST:
-                key = db.Key.from_path('Comment', int(comment_id))
-                comment = db.get(key)
-                comment.delete()
-                return self.redirect("/")
-            if "cancel-delete" in self.request.POST:
-                return self.redirect("/")
         else:
             return self.redirect('/asciichan2/')
 
@@ -619,7 +542,7 @@ class Signup(BlogHandler):
 # Inherits from signup and overwrites done
 class Unit2Signup(Signup):
     def done(self):
-        return self.redirect('/unit2/welcome?username=' + 
+        return self.redirect('/unit2/welcome?username=' +
             self.username)
 
 # Register class inherits from signup
@@ -629,11 +552,11 @@ class Register(Signup):
         u = User.by_name(self.username)
         if u:
             msg = 'That user already exists.'
-            self.render('signup-form.html', 
+            self.render('signup-form.html',
                 error_username=msg)
         else:
-            u = User.register(self.username, 
-                self.password, 
+            u = User.register(self.username,
+                self.password,
                 self.email)
             u.put()
             self.login(u)

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    {{query.render() | safe}}
+    {{post.render() | safe}}
     <hr/>
     <div class="alert alert-info" role="alert">Are you sure you want to delete this post permanently?</div>
     <form method="post">

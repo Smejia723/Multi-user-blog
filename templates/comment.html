@@ -1,7 +1,17 @@
-
-      {{p.content}}
-      {{p.content}}
-      {{p.created.strftime("%b %d, %Y")}}
+{% extends "base.html" %}
       {{p._render_text | safe}}
+{% block content %}
 
+    <div class="newpost">
+        <div class="newpost__form">
+            <form method="post" autocomplete="off">
+                <textarea autofocus class="form__textarea" placeholder="Write a response..." type="text" name="content">{{content}}</textarea>
+                <input class="button-outline form__submit" type="submit" value="publish">
+                <span class="form__message">{{error}}</span>
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}
 

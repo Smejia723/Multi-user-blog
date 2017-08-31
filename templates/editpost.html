@@ -3,7 +3,7 @@
 
 {% if flag %}
 <h2 class="post-title">Edit Post</h2>
-Last modified {{query.last_modified.strftime("%b %d, %Y %H:%M %p")}}
+Last modified {{post.last_modified.strftime("%b %d, %Y %H:%M %p")}}
 <hr/>
 <form method="post">
   <div class="row">
@@ -13,7 +13,7 @@ Last modified {{query.last_modified.strftime("%b %d, %Y %H:%M %p")}}
   </div>
   <div class="row">
     <div class="col-md-12">
-      <input name="subject" type="text" value="{{query.subject}}">
+      <input name="subject" type="text" value="{{post.subject}}">
     </div>
   </div>
   <br>
@@ -24,7 +24,7 @@ Last modified {{query.last_modified.strftime("%b %d, %Y %H:%M %p")}}
   </div>
   <div class="row">
     <div class="col-md-12">
-      <textarea name="content">{{query.content}}</textarea>
+      <textarea name="content">{{post.content}}</textarea>
       <br><br>
       {% if error %}
       <div class="alert alert-danger" role="alert">{{error}}</div>
@@ -35,9 +35,6 @@ Last modified {{query.last_modified.strftime("%b %d, %Y %H:%M %p")}}
     <div class="btn-group btn-group-sm" role="group" aria-label="...">
       <div class="col-md-4">
           <button type="submit" name="update" value="Update" class="btn btn-default">Update</button>
-          </div>
-          <div class="col-md-4">
-          <button type="submit" name="delete" value="Delete" class="btn btn-default">Delete</button>
           </div>
           <div class="col-md-4">
           <button type="submit" name="cancel" value="Cancel" class="btn btn-default">Cancel</button>
@@ -51,7 +48,7 @@ Last modified {{query.last_modified.strftime("%b %d, %Y %H:%M %p")}}
 
 {% if not flag %}
 <div class="alert alert-danger" role="alert">You cannot modify this post, <a href="
-/asciichan2/postandcomments/{{query.key().id()}}">click here to return</a></div>
+/asciichan2/postandcomments/{{post.key().id()}}">click here to return</a></div>
 {% endif %}
 
 {% endblock %}

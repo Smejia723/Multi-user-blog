@@ -1,29 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {{post.render() | safe}}
+    <div class="row">
+        <div class="col-md-7">
+            {% if error %}
+                <div class="error">{{error}}</div>
+            {% endif %}
+        </div>
+        <div class="col-md-5">
+            <a id="post-delete" class="btn btn-danger pull-right" href="/asciichan2/delete-confirmation/{{post.key().id()}}">Delete</a>
+            <a id="post-edit" class="btn btn-primary pull-right" href="/asciichan2/editpost/{{post.key().id()}}">Edit</a>
+        </div>
+        {{post.render() | safe}}
+    </div>
+        <div class="sub-work col-md-12">
+            <form method="post" role="form" class="comment-form">
+                <div class="form-group">
+                    <label for="comment">Comment:</label>
+                    <input type="text" class="form-control" id="comment" name="comment" value="">
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+        </div>
 
-  {% if user %}
-    <br><br>
-    <form class="new-comment-form" action="/asciichan2/newpost" method="post">
-      <label>
-        <div>Leave a comment:</div>
-        <textarea name="content">{{content}}</textarea>
-        <input type="hidden" name="post_id" value="{{post.key().id()}}">
-      </label>
+        <div class="sub-work col-md-12">
+            {% for c in comments %}
+            <blockquote>
+                <a class="comment-delete btn btn-danger pull-right" href="/asciichan2/deletecomment/{{post.key().id()}}/{{c.key().id()}}">Delete</a>
+                <a class="comment-edit btn btn-primary pull-right" href="/asciichan2/editcomment/{{post.key().id()}}/{{c.key().id()}}">Edit</a>
+                <footer>{{ c.getUserName() }}</footer>
+            </blockquote>
+            {% endfor %}
+        </div>
 
-      <div class="error">{{error}}</div>
-
-      <input type="submit">
-    </form>
-  {% endif %}
-
-  <br><br>
-  {% if comments.count() %}
-    <h2>Comments</h2>
-    {% for comment in comments %}
-      {{comment.render(user) | safe}}
-      <br><br>
-    {% endfor %}
-  {% endif %}
+    </div>
 {% endblock %}
+
+
