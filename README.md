@@ -1,5 +1,5 @@
 # Multi-user-blog
-Udacity project a simple Multi-user-blog bult in python
+Project of Multi-user-blog bult in python. The poject can have many users post, edit and deleat their blog post and like others posts. 
 
 # Usage
 Clone this repo to your desktop, go to its root directory and run:
