@@ -1,6 +1,45 @@
 # Multi-user-blog
 Project of Multi-user-blog bult in python. The poject can have many users post, edit and deleat their blog post and like others posts. 
 
+# Multi-user-blog Contents
+- `asciichan.py`
+- `asciichan.pyc`
+- `index.yaml`
+- `app.yaml`
+- `config.json`
+- `templates` Folder contaning HTML 
+  ```
+  base.html 	
+	comment.html 	
+	delete-confirmation.html 	
+	deletecomment.html 	
+	editcomment.html 	
+	editpost.html 	
+	error.html 	
+	front.html 	
+	login-form.html 	 
+	newpost.html 	
+	permalink.html 	
+	post.html 	
+	postandcomments.html 	
+	rot13-form.html 	
+	signup-form.html 	
+	welcome.html
+  ```
+- `js` Folder containing javascrip
+  ```
+  bootstrap.js
+  bootstrap.min.js
+  ```
+- `css` Folder containing bootstrap.css
+  ```
+  bootstrap-theme.css
+  bootstrap-theme.min.css
+  bootstrap.css
+  bootstrap.min.css
+  ```
+
+
 # Usage
 Clone this repo to your desktop, go to its root directory and run:
 
